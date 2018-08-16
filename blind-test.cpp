@@ -60,47 +60,72 @@ int main(int argc, char* argv[])
     SHA256 hash;
 	hash.CalculateDigest(digest, orig, orig.size());
     Integer msg(digest, SHA256::DIGESTSIZE);
-    cout << "Message: " << std::hex << msg << endl;
+    //cout << "Message: " << std::hex << msg << endl;
 
-    // Alice blinding
-    Integer r;
-    do {
-        r.Randomize(prng, Integer::One(), n - Integer::One());
-    } while (!RelativelyPrime(r, n));
+	double timeBlind = 0, timeSign = 0, timeUnblind = 0, timeVerify = 0;
+	int count = 100000;
+	double start = 0;
 
-    // Blinding factor
-    Integer b = a_exp_b_mod_c(r, e, n);
-    cout << "Blind factor: " << std::hex << b << endl;
+	for(int i = 0; i < count; ++i) {
 
-    // Alice blinded message
-    Integer blindedMsg = a_times_b_mod_c(msg, b, n);
-    cout << "Blinded msg: " << std::hex << blindedMsg << endl;
+		start = get_time();
+		// Alice blinding
+		Integer r;
+		do {
+			r.Randomize(prng, Integer::One(), n - Integer::One());
+		} while (!RelativelyPrime(r, n));
 
-    // Bob sign
-    Integer ss = privKey.CalculateInverse(prng, blindedMsg);
-    cout << "Blind sign: " << ss << endl;
+		// Blinding factor
+		Integer b = a_exp_b_mod_c(r, e, n);
+		//cout << "Blind factor: " << std::hex << b << endl;
 
-    // Alice checks s(s'(x)) = x. This is from Chaum's paper
-    Integer verifyBlindedMsg = pubKey.ApplyFunction(ss);	// ss^e mode n
-    cout << "Verified blinded msg: " << verifyBlindedMsg << endl;
-    if (verifyBlindedMsg != blindedMsg)
-        throw runtime_error("Alice cross-check failed");
+		// Alice blinded message
+		Integer blindedMsg = a_times_b_mod_c(msg, b, n);
+		//cout << "Blinded msg: " << std::hex << blindedMsg << endl;
+		timeBlind += get_time() - start;
 
-    // Alice remove blinding
-    Integer s = a_times_b_mod_c(ss, r.InverseMod(n), n);
-    cout << "Unblind sign: " << s << endl;
-    Integer origSign = privKey.CalculateInverse(prng, msg);
-    cout << "Original sign: " << origSign << endl;
-    if (s != origSign)
-        throw runtime_error("Alice cross-check failed");
 
-    // Eve verifies
-    Integer verifyMsg = pubKey.ApplyFunction(s);	// s^e mode n
-    cout << "Verified msg: " << std::hex << verifyMsg << endl;
-    if (verifyMsg != msg)
-        throw runtime_error("Alice cross-check failed");
+		start = get_time();
+		// Bob sign
+		Integer ss = privKey.CalculateInverse(prng, blindedMsg);
+		//cout << "Blind sign: " << ss << endl;
+		timeSign += get_time() - start;
+
+
+		// Alice checks s(s'(x)) = x. This is from Chaum's paper
+		Integer verifyBlindedMsg = pubKey.ApplyFunction(ss);	// ss^e mode n
+		//cout << "Verified blinded msg: " << verifyBlindedMsg << endl;
+		if (verifyBlindedMsg != blindedMsg)
+			throw runtime_error("Alice cross-check failed");
+
+
+		start = get_time();
+		// Alice remove blinding
+		Integer s = a_times_b_mod_c(ss, r.InverseMod(n), n);
+		//cout << "Unblind sign: " << s << endl;
+		timeUnblind += get_time() - start;
+		Integer origSign = privKey.CalculateInverse(prng, msg);
+		//cout << "Original sign: " << origSign << endl;
+		if (s != origSign)
+			throw runtime_error("Alice cross-check failed");
+
+
+		start = get_time();
+		// Eve verifies
+		Integer verifyMsg = pubKey.ApplyFunction(s);	// s^e mode n
+		//cout << "Verified msg: " << std::hex << verifyMsg << endl;
+		if (verifyMsg != msg)
+			throw runtime_error("Alice cross-check failed");
+		timeVerify += get_time() - start;
+
+	}	//for
 
     cout << "Verified signature" << endl;
+	cout << endl
+		<< "time for blind: " << timeBlind / count << endl
+		<< "time for sign: " << timeSign / count << endl
+		<< "time for unblind: " << timeUnblind / count << endl
+		<< "time for verify: " << timeVerify / count << endl;
 
     return 0;
 }
