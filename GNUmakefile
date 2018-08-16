@@ -844,9 +844,11 @@ gcov codecov: cryptest.exe
 valgrind: cryptest.exe
 	valgrind --track-origins=yes --suppressions=cryptopp.supp ./cryptest.exe v
 
-.PHONY: test check
+.PHONY: test check blind-test
 test check: cryptest.exe
 	./cryptest.exe v
+blind-test: libcryptopp.a
+	g++ blind-test.cpp ./libcryptopp.a -o blind-test
 
 # Used to generate list of source files for Autotools, CMakeList, Android.mk, etc
 .PHONY: sources
