@@ -38,20 +38,20 @@ int main(int argc, char* argv[])
 {
     // Bob artificially small key pair
     AutoSeededRandomPool prng;
-    RSA::PrivateKey privKey;
+    RSA::PrivateKey privateKey;
 
-    privKey.GenerateRandomWithKeySize(prng, 256);
-    RSA::PublicKey pubKey(privKey);
+    privateKey.GenerateRandomWithKeySize(prng, 2048);
+    RSA::PublicKey publicKey(privateKey);
 
     // Convenience
-    const Integer& n = pubKey.GetModulus();
-    const Integer& e = pubKey.GetPublicExponent();
-    const Integer& d = privKey.GetPrivateExponent();
+    const Integer& n = publicKey.GetModulus();
+    const Integer& e = publicKey.GetPublicExponent();
+    const Integer& d = privateKey.GetPrivateExponent();
 
     // Print params
-    //cout << "Pub mod: " << std::hex << pubKey.GetModulus() << endl;
+    //cout << "Pub mod: " << std::hex << publicKey.GetModulus() << endl;
     //cout << "Pub exp: " << std::hex << e << endl;
-    //cout << "Priv mod: " << std::hex << privKey.GetModulus() << endl;
+    //cout << "Priv mod: " << std::hex << privateKey.GetModulus() << endl;
     //cout << "Priv exp: " << std::hex << d << endl;
 
     // Alice original message to be signed by Bob
@@ -63,8 +63,49 @@ int main(int argc, char* argv[])
     //cout << "Message: " << std::hex << msg << endl;
 
 	double timeBlind = 0, timeSign = 0, timeUnblind = 0, timeVerify = 0;
-	int count = 100000;
+	int count = 1000;
 	double start = 0;
+
+	cout << endl << "======= RSA signature ======" << endl;
+	timeSign = 0, timeVerify = 0;
+
+	// Signer object
+	RSASSA_PKCS1v15_SHA_Signer signer(privateKey);
+	// Verifier object
+	RSASSA_PKCS1v15_SHA_Verifier verifier(publicKey);
+
+	for(int i = 0; i < count; ++i) {
+		// Create signature space
+		size_t length = signer.MaxSignatureLength();
+		SecByteBlock signature(length);
+
+		start = get_time();
+		// Sign message
+		length = signer.SignMessage(prng, digest, SHA256::DIGESTSIZE, signature);
+		timeSign += get_time() - start;
+
+		// Resize now we know the true size of the signature
+		signature.resize(length);
+
+		start = get_time();
+		// Verify
+		bool result = verifier.VerifyMessage(digest, SHA256::DIGESTSIZE, signature, signature.size());
+		// Result
+		if(true != result) {
+			cout << "Message verification failed" << endl;
+		}
+		timeVerify += get_time() - start;
+
+	}
+
+	cout << endl
+		<< "time for sign: " << timeSign / count << endl
+		<< "time for verify: " << timeVerify / count << endl;
+
+
+
+	cout << endl << "======= Blind signature ======" << endl;
+	timeBlind = 0, timeSign = 0, timeUnblind = 0, timeVerify = 0;
 
 	for(int i = 0; i < count; ++i) {
 
@@ -87,13 +128,13 @@ int main(int argc, char* argv[])
 
 		start = get_time();
 		// Bob sign
-		Integer ss = privKey.CalculateInverse(prng, blindedMsg);
+		Integer ss = privateKey.CalculateInverse(prng, blindedMsg);
 		//cout << "Blind sign: " << ss << endl;
 		timeSign += get_time() - start;
 
 
 		// Alice checks s(s'(x)) = x. This is from Chaum's paper
-		Integer verifyBlindedMsg = pubKey.ApplyFunction(ss);	// ss^e mode n
+		Integer verifyBlindedMsg = publicKey.ApplyFunction(ss);	// ss^e mode n
 		//cout << "Verified blinded msg: " << verifyBlindedMsg << endl;
 		if (verifyBlindedMsg != blindedMsg)
 			throw runtime_error("Alice cross-check failed");
@@ -104,7 +145,7 @@ int main(int argc, char* argv[])
 		Integer s = a_times_b_mod_c(ss, r.InverseMod(n), n);
 		//cout << "Unblind sign: " << s << endl;
 		timeUnblind += get_time() - start;
-		Integer origSign = privKey.CalculateInverse(prng, msg);
+		Integer origSign = privateKey.CalculateInverse(prng, msg);
 		//cout << "Original sign: " << origSign << endl;
 		if (s != origSign)
 			throw runtime_error("Alice cross-check failed");
@@ -112,7 +153,7 @@ int main(int argc, char* argv[])
 
 		start = get_time();
 		// Eve verifies
-		Integer verifyMsg = pubKey.ApplyFunction(s);	// s^e mode n
+		Integer verifyMsg = publicKey.ApplyFunction(s);	// s^e mode n
 		//cout << "Verified msg: " << std::hex << verifyMsg << endl;
 		if (verifyMsg != msg)
 			throw runtime_error("Alice cross-check failed");
@@ -120,7 +161,7 @@ int main(int argc, char* argv[])
 
 	}	//for
 
-    cout << "Verified signature" << endl;
+    //cout << "Verified signature" << endl;
 	cout << endl
 		<< "time for blind: " << timeBlind / count << endl
 		<< "time for sign: " << timeSign / count << endl
