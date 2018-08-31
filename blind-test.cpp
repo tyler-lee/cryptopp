@@ -26,8 +26,9 @@ double get_time(void)
 	return 0;
     } else {
 	gettimeofday(&tv, NULL);
-	res += tv.tv_sec - last_tv.tv_sec;
-	res += (tv.tv_usec - last_tv.tv_usec) / 1000000.0;
+	//return ms
+	res += (tv.tv_sec - last_tv.tv_sec) * 1000.0;
+	res += (tv.tv_usec - last_tv.tv_usec) / 1000.0;
 	last_tv = tv;
 
 	return res;
@@ -36,11 +37,13 @@ double get_time(void)
 
 int main(int argc, char* argv[])
 {
+	const size_t keySize = 3072;
+	cout << "Key size: " << keySize <<endl;
     // Bob artificially small key pair
     AutoSeededRandomPool prng;
     RSA::PrivateKey privateKey;
 
-    privateKey.GenerateRandomWithKeySize(prng, 2048);
+    privateKey.GenerateRandomWithKeySize(prng, keySize);
     RSA::PublicKey publicKey(privateKey);
 
     // Convenience
@@ -75,6 +78,7 @@ int main(int argc, char* argv[])
 	RSASSA_PKCS1v15_SHA_Verifier verifier(publicKey);
 
 	for(int i = 0; i < count; ++i) {
+
 		// Create signature space
 		size_t length = signer.MaxSignatureLength();
 		SecByteBlock signature(length);
@@ -99,8 +103,8 @@ int main(int argc, char* argv[])
 	}
 
 	cout << endl
-		<< "time for sign: " << timeSign / count << endl
-		<< "time for verify: " << timeVerify / count << endl;
+		<< "time for sign (ms): " << timeSign / count << endl
+		<< "time for verify (ms): " << timeVerify / count << endl;
 
 
 
@@ -163,10 +167,10 @@ int main(int argc, char* argv[])
 
     //cout << "Verified signature" << endl;
 	cout << endl
-		<< "time for blind: " << timeBlind / count << endl
-		<< "time for sign: " << timeSign / count << endl
-		<< "time for unblind: " << timeUnblind / count << endl
-		<< "time for verify: " << timeVerify / count << endl;
+		<< "time for blind (ms): " << timeBlind / count << endl
+		<< "time for sign (ms): " << timeSign / count << endl
+		<< "time for unblind (ms): " << timeUnblind / count << endl
+		<< "time for verify (ms): " << timeVerify / count << endl;
 
     return 0;
 }
