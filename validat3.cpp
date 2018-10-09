@@ -26,7 +26,7 @@
 #include <sstream>
 
 // Aggressive stack checking with VS2005 SP1 and above.
-#if (_MSC_FULL_VER >= 140050727)
+#if (_MSC_VER >= 1500)
 # pragma strict_gs_check (on)
 #endif
 
@@ -69,6 +69,8 @@ bool ValidateAll(bool thorough)
 	pass=TestHuffmanCodes() && pass;
 	// http://github.com/weidai11/cryptopp/issues/346
 	pass=TestASN1Parse() && pass;
+	// https://github.com/weidai11/cryptopp/pull/334
+	pass=TestStringSink() && pass;
 	// Always part of the self tests; call in Debug
 # if defined(CRYPTOPP_ALTIVEC_AVAILABLE)
 	pass=TestAltivecOps() && pass;
@@ -201,7 +203,7 @@ bool TestSettings()
 	word32 w;
 	const byte s[] = "\x01\x02\x03\x04";
 
-#if (_MSC_FULL_VER >= 140050727)
+#if (_MSC_VER >= 1500)
 	std::copy(s, s+4,
 		stdext::make_checked_array_iterator(reinterpret_cast<byte*>(&w), sizeof(w)));
 #else

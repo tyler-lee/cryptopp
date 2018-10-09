@@ -171,6 +171,8 @@ kalyna.cpp
 kalyna.h
 keccak.cpp
 keccak.h
+keccakc.cpp
+keccakc.h
 lubyrack.h
 lea.cpp
 lea-simd.cpp
@@ -202,8 +204,6 @@ naclite.h
 nbtheory.cpp
 nbtheory.h
 neon-simd.cpp
-network.cpp
-network.h
 nr.h
 oaep.cpp
 oaep.h
@@ -300,7 +300,8 @@ simeck.cpp
 simeck-simd.cpp
 simeck.h
 simon.cpp
-simon-simd.cpp
+simon64-simd.cpp
+simon128-simd.cpp
 simon.h
 skipjack.cpp
 skipjack.h
@@ -310,12 +311,11 @@ sm4.cpp
 sm4-simd.cpp
 sm4.h
 smartptr.h
-socketft.cpp
-socketft.h
 sosemanuk.cpp
 sosemanuk.h
 speck.cpp
-speck-simd.cpp
+speck64-simd.cpp
+speck128-simd.cpp
 speck.h
 square.cpp
 square.h
@@ -334,8 +334,6 @@ threefish.h
 tiger.cpp
 tiger.h
 tigertab.cpp
-trdlocal.cpp
-trdlocal.h
 trunhash.h
 ttmac.cpp
 ttmac.h
@@ -358,14 +356,10 @@ validate.h
 vmac.cpp
 vmac.h
 vs2005.zip
-wait.cpp
-wait.h
 wake.cpp
 wake.h
 whrlpool.cpp
 whrlpool.h
-winpipes.cpp
-winpipes.h
 words.h
 x64dll.asm
 x64masm.asm
@@ -394,6 +388,8 @@ TestData/aria.dat
 TestData/camellia.dat
 TestData/cast128v.dat
 TestData/cast256v.dat
+TestData/defdmac1.bin
+TestData/defdmac2.bin
 TestData/descert.dat
 TestData/dh1024.dat
 TestData/dh2048.dat

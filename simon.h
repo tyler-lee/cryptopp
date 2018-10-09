@@ -31,7 +31,7 @@
 
 // Yet another SunStudio/SunCC workaround. Failed self tests
 // in SSE code paths on i386 for SunStudio 12.3 and below.
-#if defined(__SUNPRO_CC)
+#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x5120)
 # undef CRYPTOPP_SIMON64_ADVANCED_PROCESS_BLOCKS
 # undef CRYPTOPP_SIMON128_ADVANCED_PROCESS_BLOCKS
 #endif
@@ -63,7 +63,7 @@ template <class W>
 struct SIMON_Base
 {
     virtual ~SIMON_Base() {}
-SIMON_Base() : m_kwords(0), m_rounds(0) {}
+    SIMON_Base() : m_kwords(0), m_rounds(0) {}
 
     typedef SecBlock<W, AllocatorWithCleanup<W, true> > AlignedSecBlock;
     mutable AlignedSecBlock m_wspace;  // workspace

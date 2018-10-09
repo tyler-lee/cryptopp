@@ -230,6 +230,9 @@
     <ClCompile Include="keccak.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="keccakc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="lea.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -267,9 +270,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="nbtheory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="oaep.cpp">
@@ -395,7 +395,10 @@
     <ClCompile Include="simon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="simon-simd.cpp">
+    <ClCompile Include="simon64-simd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simon128-simd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="simple.cpp">
@@ -416,10 +419,10 @@
     <ClCompile Include="speck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="speck-simd.cpp">
+    <ClCompile Include="speck64-simd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="socketft.cpp">
+    <ClCompile Include="speck128-simd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sosemanuk.cpp">
@@ -452,9 +455,6 @@
     <ClCompile Include="tigertab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trdlocal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ttmac.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -467,16 +467,10 @@
     <ClCompile Include="vmac.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wait.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="wake.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="whrlpool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="winpipes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xtr.cpp">
@@ -720,6 +714,9 @@
     <ClInclude Include="keccak.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="keccakc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="lubyrack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -766,9 +763,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="naclite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nr.h">
@@ -912,9 +906,6 @@
     <ClInclude Include="speck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="socketft.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sosemanuk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -939,9 +930,6 @@
     <ClInclude Include="trap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="trdlocal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="trunhash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -957,16 +945,10 @@
     <ClInclude Include="vmac.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wait.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="wake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="whrlpool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="winpipes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="words.h">
